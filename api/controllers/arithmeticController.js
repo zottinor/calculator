@@ -23,9 +23,12 @@ exports.calculate = function(req, res) {
     throw new Error("Unspecified operation");
   }
 
-  var operation = operations[req.query.operation];
+  if (!Object.prototype.hasOwnProperty.call(operations, req.query.operation)) {
+    throw new Error("Invalid operation: " + req.query.operation);
+  }
 
-  if (! operation) {
+  var operation = operations[req.query.operation];
+  if (typeof operation !== 'function') {
     throw new Error("Invalid operation: " + req.query.operation);
   }
 

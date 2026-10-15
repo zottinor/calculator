@@ -10,12 +10,12 @@ exports.calculate = function(req, res) {
     res.json({ error: err.message });
   });
 
-  var operations = {
-    'add':      function(a,b) { return +a + +b },
-    'subtract': function(a,b) { return a - b },
-    'multiply': function(a,b) { return a * b },
-    'divide':   function(a,b) { return a / b },
-  };
+  var operations = new Map([
+    ['add',      function(a,b) { return +a + +b }],
+    ['subtract', function(a,b) { return a - b }],
+    ['multiply', function(a,b) { return a * b }],
+    ['divide',   function(a,b) { return a / b }],
+  ]);
 
   // Determine the operation
 
@@ -23,11 +23,11 @@ exports.calculate = function(req, res) {
     throw new Error("Unspecified operation");
   }
 
-  if (!Object.prototype.hasOwnProperty.call(operations, req.query.operation)) {
+  if (!operations.has(req.query.operation)) {
     throw new Error("Invalid operation: " + req.query.operation);
   }
 
-  var operation = operations[req.query.operation];
+  var operation = operations.get(req.query.operation);
   if (typeof operation !== 'function') {
     throw new Error("Invalid operation: " + req.query.operation);
   }
